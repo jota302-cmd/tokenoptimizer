@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Token-Optimizer | OptiMicroTools</title>
+    <meta name="description" content="Optimize and compress your LLM prompts locally. Save tokens for GPT-4 and Claude without losing meaning.">
+    
+    <!-- AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8167884438770174" crossorigin="anonymous"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cyan-electric: #06B6D4;
+            --dark-bg: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+        }
+
+        .text-cyan-electric { color: var(--cyan-electric); }
+        .bg-cyan-electric { background-color: var(--cyan-electric); }
+        .border-cyan-electric { border-color: var(--cyan-electric); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cyan-electric); }
+
+        .ad-slot {
+            border: 1px dashed #444;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        .ad-slot::before {
+            content: attr(data-label);
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .progress-bar {
+            height: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        textarea {
+            background: transparent;
+            resize: none;
+            outline: none;
+            border: 1px solid var(--glass-border);
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--cyan-electric);
+        }
+
+        .btn-glow:hover {
+            box-shadow: 0 0 15px var(--cyan-electric);
+        }
+    </style>
+</head>
+<body class="flex flex-col">
+
+    <!-- Header -->
+    <header class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <a href="https://optimicrotools.com" class="hover:opacity-80 transition-opacity" title="Go to Home / Ir al Inicio">
+            <h1 class="text-2xl font-bold tracking-tighter">
+                <span class="text-white">Opti</span><span class="text-cyan-electric">Micro</span><span class="text-white">Tools</span>
+            </h1>
+        </a>
+        <div class="flex gap-4 items-center">
+            <button id="langToggle" class="text-sm font-semibold hover:text-cyan-electric transition-colors uppercase">ES</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        
+        <!-- Upper Ad -->
+        <div class="ad-slot max-w-4xl mx-auto" data-label="Ads / Anuncio"></div>
+
+        <div class="text-center mb-12">
+            <h2 id="mainTitle" class="text-4xl md:text-5xl font-bold mb-4">LLM Token-Optimizer</h2>
+            <p id="mainSubtitle" class="text-gray-400 max-w-2xl mx-auto">Compress your prompts for maximum efficiency without losing context.</p>
+        </div>
+
+        <!-- Controls -->
+        <div class="max-w-4xl mx-auto mb-8 glass p-6 flex flex-wrap gap-6 items-center justify-between">
+            <div class="flex items-center gap-4">
+                <label id="levelLabel" class="font-semibold">Compression Level:</label>
+                <select id="compressionLevel" class="bg-black border border-white/20 rounded px-3 py-1 text-sm focus:border-cyan-electric outline-none">
+                    <option value="low" id="optLow">Standard Cleanup</option>
+                    <option value="medium" id="optMed">Balanced</option>
+                    <option value="high" id="optHigh">Aggressive (List Mode)</option>
+                </select>
+            </div>
+            <div id="stats" class="text-sm flex gap-4">
+                <span id="charSaving" class="text-cyan-electric">Savings: 0%</span>
+                <span id="wordSaving" class="text-gray-400">0 words saved</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+            <!-- Input -->
+            <div class="flex flex-col space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 id="inputTitle" class="font-semibold text-lg">Your Prompt</h3>
+                    <span id="inputCharCount" class="text-xs text-gray-500">0 characters</span>
+                </div>
+                <div class="glass flex-grow relative overflow-hidden">
+                    <textarea id="inputText" class="w-full h-80 p-6 rounded-2xl" placeholder="Paste your text here..."></textarea>
+                </div>
+            </div>
+
+            <!-- Output -->
+            <div class="flex flex-col space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 id="outputTitle" class="font-semibold text-lg">Optimized Result</h3>
+                    <span id="outputCharCount" class="text-xs text-gray-500">0 characters</span>
+                </div>
+                <div class="glass flex-grow relative overflow-hidden">
+                    <div id="loadingBar" class="progress-bar bg-cyan-electric absolute top-0 left-0"></div>
+                    <textarea id="outputText" class="w-full h-80 p-6 rounded-2xl" readonly placeholder="Result will appear here..."></textarea>
+                </div>
+                <button id="copyBtn" class="bg-cyan-electric text-black font-bold py-3 rounded-xl btn-glow transition-all flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    <span id="copyText">Copy Optimized Text</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Lower Ad -->
+        <div class="ad-slot max-w-4xl mx-auto mt-12" data-label="Ads / Anuncio"></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-8 text-center text-gray-500 text-sm border-t border-white/5">
+        <div class="flex justify-center gap-6 mb-4">
+            <button onclick="openModal('privacy')" id="footerPrivacy" class="hover:text-cyan-electric underline">Privacy Policy</button>
+            <button onclick="openModal('terms')" id="footerTerms" class="hover:text-cyan-electric underline">Terms of Service</button>
+        </div>
+        <p>&copy; 2026 OptiMicroTools. All rights reserved.</p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
+        <div class="glass max-w-2xl w-full max-h-[80vh] overflow-y-auto p-10 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">&times;</button>
+            <div id="modalContent" class="prose prose-invert prose-cyan text-gray-300">
+                <!-- Content injected here -->
+            </div>
+            <button onclick="acceptLegal()" id="modalAccept" class="mt-8 w-full bg-cyan-electric text-black font-bold py-3 rounded-lg hover:opacity-90">I Accept / Acepto</button>
+        </div>
+    </div>
+
+    <!-- Core Logic -->
+    <script>
+        const translations = {
+            en: {
+                mainTitle: "LLM Token-Optimizer",
+                mainSubtitle: "Compress your prompts for maximum efficiency without losing context.",
+                levelLabel: "Compression Level:",
+                optLow: "Standard Cleanup",
+                optMed: "Balanced",
+                optHigh: "Aggressive (List Mode)",
+                inputTitle: "Your Prompt",
+                outputTitle: "Optimized Result",
+                inputTextPlace: "Paste your text here...",
+                outputTextPlace: "Result will appear here...",
+                copyText: "Copy Optimized Text",
+                copied: "Copied!",
+                savings: "Savings:",
+                wordsSaved: "words saved",
+                charCount: "characters",
+                footerPrivacy: "Privacy Policy",
+                footerTerms: "Terms of Service",
+                legalAccept: "I Understand & Accept",
+                privacyTitle: "Privacy Policy",
+                termsTitle: "Terms of Service",
+                privacyContent: "This tool processes all text 100% locally in your browser. We never transmit your prompts to any server. Your privacy is guaranteed.",
+                termsContent: "By using this tool, you agree that processing happens on your device. We are not responsible for any LLM output changes resulting from compression."
+            },
+            es: {
+                mainTitle: "Optimizador de Tokens LLM",
+                mainSubtitle: "Comprime tus prompts para máxima eficiencia sin perder el contexto.",
+                levelLabel: "Nivel de Compresión:",
+                optLow: "Limpieza Estándar",
+                optMed: "Equilibrado",
+                optHigh: "Agresivo (Modo Lista)",
+                inputTitle: "Tu Prompt",
+                outputTitle: "Resultado Optimizado",
+                inputTextPlace: "Pega tu texto aquí...",
+                outputTextPlace: "El resultado aparecerá aquí...",
+                copyText: "Copiar Texto Optimizado",
+                copied: "¡Copiado!",
+                savings: "Ahorro:",
+                wordsSaved: "palabras ahorradas",
+                charCount: "caracteres",
+                footerPrivacy: "Política de Privacidad",
+                footerTerms: "Términos de Servicio",
+                legalAccept: "Entiendo y Acepto",
+                privacyTitle: "Política de Privacidad",
+                termsTitle: "Términos de Servicio",
+                privacyContent: "Esta herramienta procesa todo el texto 100% localmente en tu navegador. Nunca transmitimos tus prompts a ningún servidor. Tu privacidad está garantizada.",
+                termsContent: "Al usar esta herramienta, aceptas que el procesamiento ocurre en tu dispositivo. No somos responsables de cambios en los resultados de LLM producto de la compresión."
+            }
+        };
+
+        const stopWords = {
+            en: new Set(['the', 'a', 'an', 'and', 'or', 'but', 'for', 'nor', 'by', 'at', 'from', 'each', 'this', 'that', 'with', 'which', 'whom', 'where', 'while', 'after', 'before', 'then']),
+            es: new Set(['el', 'la', 'un', 'una', 'y', 'o', 'pero', 'por', 'que', 'en', 'cada', 'este', 'ese', 'con', 'cual', 'donde', 'cuando', 'quien', 'antes', 'despues', 'luego'])
+        };
+
+        let currentLang = 'en';
+
+        // Initialize
+        function init() {
+            const savedLang = localStorage.getItem('om-lang') || (navigator.language.startsWith('es') ? 'es' : 'en');
+            setLanguage(savedLang);
+            checkLegalConsent();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('om-lang', lang);
+            document.getElementById('langToggle').textContent = lang === 'en' ? 'ES' : 'EN';
+            
+            const t = translations[lang];
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('mainSubtitle').textContent = t.mainSubtitle;
+            document.getElementById('levelLabel').textContent = t.levelLabel;
+            document.getElementById('optLow').textContent = t.optLow;
+            document.getElementById('optMed').textContent = t.optMed;
+            document.getElementById('optHigh').textContent = t.optHigh;
+            document.getElementById('inputTitle').textContent = t.inputTitle;
+            document.getElementById('outputTitle').textContent = t.outputTitle;
+            document.getElementById('inputText').placeholder = t.inputTextPlace;
+            document.getElementById('outputText').placeholder = t.outputTextPlace;
+            document.getElementById('copyText').textContent = t.copyText;
+            document.getElementById('footerPrivacy').textContent = t.footerPrivacy;
+            document.getElementById('footerTerms').textContent = t.footerTerms;
+            document.getElementById('modalAccept').textContent = t.legalAccept;
+
+            updateStats();
+        }
+
+        document.getElementById('langToggle').onclick = () => {
+            setLanguage(currentLang === 'en' ? 'es' : 'en');
+        };
+
+        // Optimization Engine
+        const inputArea = document.getElementById('inputText');
+        const outputArea = document.getElementById('outputText');
+        const levelSelect = document.getElementById('compressionLevel');
+
+        inputArea.addEventListener('input', debounce(optimize, 300));
+        levelSelect.addEventListener('change', optimize);
+
+        function optimize() {
+            const text = inputArea.value.trim();
+            if (!text) {
+                outputArea.value = '';
+                updateStats();
+                return;
+            }
+
+            const startTime = Date.now();
+            const level = levelSelect.value;
+            
+            // Show progress bar for heavy tasks
+            const progress = document.getElementById('loadingBar');
+            progress.style.width = '100%';
+
+            setTimeout(() => {
+                let result = text;
+
+                // Level 1: Basic Cleanup
+                result = result.replace(/\s+/g, ' ')
+                               .replace(/\n\s*\n/g, '\n')
+                               .trim();
+
+                // Level 2: Stop Words Removal (Balanced)
+                if (level === 'medium' || level === 'high') {
+                    const words = result.split(/\s+/);
+                    const filtered = words.filter(word => {
+                        const cleanWord = word.toLowerCase().replace(/[.,!?;:]/g, '');
+                        return !stopWords.en.has(cleanWord) && !stopWords.es.has(cleanWord);
+                    });
+                    result = filtered.join(' ');
+                }
+
+                // Level 3: Aggressive List Mode
+                if (level === 'high') {
+                    // Convert paragraphs to bullet points
+                    const sentences = result.split(/[.!?]+/).filter(s => s.trim().length > 5);
+                    result = sentences.map(s => `• ${s.trim()}`).join('\n');
+                }
+
+                outputArea.value = result;
+                updateStats();
+                
+                // Hide progress bar
+                setTimeout(() => progress.style.width = '0%', 200);
+            }, 50);
+        }
+
+        function updateStats() {
+            const iText = inputArea.value;
+            const oText = outputArea.value;
+            
+            document.getElementById('inputCharCount').textContent = `${iText.length} ${translations[currentLang].charCount}`;
+            document.getElementById('outputCharCount').textContent = `${oText.length} ${translations[currentLang].charCount}`;
+
+            if (iText.length > 0) {
+                const diff = iText.length - oText.length;
+                const perc = Math.round((diff / iText.length) * 100) || 0;
+                const wordDiff = iText.split(/\s+/).length - oText.split(/\s+/).length;
+
+                document.getElementById('charSaving').textContent = `${translations[currentLang].savings} ${perc}%`;
+                document.getElementById('wordSaving').textContent = `${wordDiff} ${translations[currentLang].wordsSaved}`;
+            } else {
+                document.getElementById('charSaving').textContent = `${translations[currentLang].savings} 0%`;
+                document.getElementById('wordSaving').textContent = `0 ${translations[currentLang].wordsSaved}`;
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, arguments), wait);
+            };
+        }
+
+        // Copy functionality
+        document.getElementById('copyBtn').onclick = () => {
+            if (!outputArea.value) return;
+            navigator.clipboard.writeText(outputArea.value).then(() => {
+                const btnContent = document.getElementById('copyBtn').innerHTML;
+                const copyText = document.getElementById('copyText');
+                const original = copyText.textContent;
+                copyText.textContent = translations[currentLang].copied;
+                setTimeout(() => copyText.textContent = original, 2000);
+            });
+        };
+
+        // Modal Logic
+        function openModal(type) {
+            const overlay = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            const t = translations[currentLang];
+
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            if (type === 'privacy') {
+                content.innerHTML = `<h2>${t.privacyTitle}</h2><p>${t.privacyContent}</p>`;
+            } else {
+                content.innerHTML = `<h2>${t.termsTitle}</h2><p>${t.termsContent}</p>`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function acceptLegal() {
+            localStorage.setItem('om-consent', 'true');
+            closeModal();
+        }
+
+        function checkLegalConsent() {
+            if (!localStorage.getItem('om-consent')) {
+                setTimeout(() => openModal('privacy'), 1000);
+            }
+        }
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        init();
+    </script>
+</body>
+</html>
