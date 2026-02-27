@@ -1,248 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Token-Optimizer | OptiMicroTools</title>
-    <meta name="description" content="Optimize and compress your LLM prompts locally. Save tokens for GPT-4 and Claude without losing meaning.">
-    
-    <!-- AdSense Script -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8167884438770174" crossorigin="anonymous"></script>
+    <meta name="description"
+        content="Optimize and compress your LLM prompts locally. Save tokens for GPT-4 and Claude without losing meaning.">
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <!-- AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8167884438770174"
+        crossorigin="anonymous"></script>
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --cyan-electric: #06B6D4;
+            --cyan-glow: rgba(6, 182, 212, 0.4);
             --dark-bg: #000000;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #FFFFFF;
+            --text-dim: #94A3B8;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-bg);
-            color: #ffffff;
+            background-image: radial-gradient(circle at 50% -20%, #111111 0%, #000000 70%);
+            color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        .glass {
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--cyan-electric);
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        header {
+            padding: 2.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            color: #fff;
+        }
+
+        .logo h1 span {
+            color: var(--cyan-electric);
+            text-shadow: 0 0 15px var(--cyan-glow);
+        }
+
+        .lang-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 0.6rem 1.2rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--cyan-electric);
+            background: rgba(6, 182, 212, 0.1);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+
+        /* --- Main Component --- */
+        main {
+            flex: 1;
+            padding-bottom: 5rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .hero h2 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            color: var(--text-dim);
+            font-size: 1.15rem;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* --- Tool Interface --- */
+        .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            border-radius: 1rem;
+            border-radius: 2rem;
+            padding: 2.5rem;
+            transition: border-color 0.3s ease;
         }
 
-        .text-cyan-electric { color: var(--cyan-electric); }
-        .bg-cyan-electric { background-color: var(--cyan-electric); }
-        .border-cyan-electric { border-color: var(--cyan-electric); }
+        .controls-bar {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #111; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--cyan-electric); }
-
-        .ad-slot {
-            border: 1px dashed #444;
-            min-height: 90px;
+        .setting-group {
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            background: rgba(255, 255, 255, 0.02);
-            margin: 1rem 0;
-            border-radius: 0.5rem;
+            gap: 1rem;
         }
 
-        .ad-slot::before {
-            content: attr(data-label);
-            font-size: 0.7rem;
-            color: #666;
+        .setting-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dim);
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .progress-bar {
-            height: 2px;
-            width: 0%;
-            transition: width 0.3s ease;
+        select {
+            background: #000;
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 0.7rem 1.2rem;
+            border-radius: 1rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .modal-overlay {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
+        select:focus {
+            border-color: var(--cyan-electric);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+        }
+
+        .stats-chip {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .stats-chip .savings-val {
+            color: var(--cyan-electric);
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+
+        .stats-chip .words-val {
+            color: var(--text-dim);
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .editor-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .editor-header span {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 500;
         }
 
         textarea {
-            background: transparent;
+            width: 100%;
+            height: 420px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
             resize: none;
             outline: none;
-            border: 1px solid var(--glass-border);
-            transition: border-color 0.3s ease;
+            transition: var(--transition);
         }
 
         textarea:focus {
             border-color: var(--cyan-electric);
+            background: rgba(6, 182, 212, 0.02);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
-        .btn-glow:hover {
-            box-shadow: 0 0 15px var(--cyan-electric);
+        textarea[readonly] {
+            background: rgba(0, 0, 0, 0.4);
+            cursor: default;
+        }
+
+        .btn-primary {
+            background: var(--cyan-electric);
+            color: #000;
+            border: none;
+            padding: 1.1rem 2rem;
+            border-radius: 1.25rem;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(6, 182, 212, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* --- Ad Slots --- */
+        .ad-slot {
+            width: 100%;
+            min-height: 100px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dashed var(--glass-border);
+            border-radius: 1.25rem;
+            margin: 3rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 700;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 5rem 0;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            background: linear-gradient(to bottom, transparent, rgba(6, 182, 212, 0.02));
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links button {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .footer-links button::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--cyan-electric);
+            transition: var(--transition);
+        }
+
+        .footer-links button:hover {
+            color: #fff;
+        }
+
+        .footer-links button:hover::after {
+            width: 100%;
+        }
+
+        .copyright {
+            color: #333;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        /* --- Modals --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-content {
+            background: #050505;
+            border: 1px solid var(--glass-border);
+            border-radius: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            padding: 3.5rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            border-color: var(--cyan-electric);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-body h2 {
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .modal-body p {
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .btn-modal {
+            width: 100%;
+            padding: 1.1rem;
+            border-radius: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-accept {
+            background: var(--cyan-electric);
+            color: #000;
+            border: none;
+        }
+
+        .btn-accept:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--cyan-electric);
+            background: rgba(6, 182, 212, 0.05);
+            color: var(--cyan-electric);
+        }
+
+        .crypto-box {
+            background: #000;
+            border: 1px solid var(--glass-border);
+            padding: 1.25rem;
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .crypto-box:hover {
+            border-color: var(--cyan-glow);
+        }
+
+        .crypto-addr {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan-electric);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 1.5rem;
+            font-weight: 600;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* --- Mobile --- */
+        @media (max-width: 900px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero h2 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .glass-card {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stats-chip {
+                justify-content: space-between;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
-<body class="flex flex-col">
 
-    <!-- Header -->
-    <header class="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
-        <a href="https://optimicrotools.com" class="hover:opacity-80 transition-opacity" title="Go to Home / Ir al Inicio">
-            <h1 class="text-2xl font-bold tracking-tighter">
-                <span class="text-white">Opti</span><span class="text-cyan-electric">Micro</span><span class="text-white">Tools</span>
-            </h1>
+<body>
+
+    <header class="container">
+        <a href="https://optimicrotools.com" class="logo" title="Go to Home / Ir al Inicio">
+            <h1>Opti<span>Micro</span>Tools</h1>
         </a>
-        <div class="flex gap-4 items-center">
-            <button id="langToggle" class="text-sm font-semibold hover:text-cyan-electric transition-colors uppercase">ES</button>
-        </div>
+        <button id="langToggle" class="lang-btn">ES</button>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8">
-        
-        <!-- Upper Ad -->
-        <div class="ad-slot max-w-4xl mx-auto" data-label="Ads / Anuncio"></div>
+    <main class="container">
+        <div class="ad-slot" data-label="Ads / Anuncio"></div>
 
-        <div class="text-center mb-12">
-            <h2 id="mainTitle" class="text-4xl md:text-5xl font-bold mb-4">LLM Token-Optimizer</h2>
-            <p id="mainSubtitle" class="text-gray-400 max-w-2xl mx-auto">Compress your prompts for maximum efficiency without losing context.</p>
-        </div>
+        <section class="hero">
+            <h2 id="mainTitle">LLM Token-Optimizer</h2>
+            <p id="mainSubtitle">Reduce prompt cost and complexity without losing semantic depth.</p>
+        </section>
 
-        <!-- Controls -->
-        <div class="max-w-4xl mx-auto mb-8 glass p-6 flex flex-wrap gap-6 items-center justify-between">
-            <div class="flex items-center gap-4">
-                <label id="levelLabel" class="font-semibold">Compression Level:</label>
-                <select id="compressionLevel" class="bg-black border border-white/20 rounded px-3 py-1 text-sm focus:border-cyan-electric outline-none">
-                    <option value="low" id="optLow">Standard Cleanup</option>
-                    <option value="medium" id="optMed">Balanced</option>
-                    <option value="high" id="optHigh">Aggressive (List Mode)</option>
-                </select>
-            </div>
-            <div id="stats" class="text-sm flex gap-4">
-                <span id="charSaving" class="text-cyan-electric">Savings: 0%</span>
-                <span id="wordSaving" class="text-gray-400">0 words saved</span>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-            <!-- Input -->
-            <div class="flex flex-col space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 id="inputTitle" class="font-semibold text-lg">Your Prompt</h3>
-                    <span id="inputCharCount" class="text-xs text-gray-500">0 characters</span>
+        <section class="glass-card">
+            <div class="controls-bar">
+                <div class="setting-group">
+                    <label id="levelLabel">Mode:</label>
+                    <select id="compressionLevel">
+                        <option value="low" id="optLow">Standard Cleanup</option>
+                        <option value="medium" id="optMed">Balanced Optimization</option>
+                        <option value="high" id="optHigh">Aggressive List Mode</option>
+                    </select>
                 </div>
-                <div class="glass flex-grow relative overflow-hidden">
-                    <textarea id="inputText" class="w-full h-80 p-6 rounded-2xl" placeholder="Paste your text here..."></textarea>
+                <div class="stats-chip">
+                    <span id="charSaving" class="savings-val">Savings: 0%</span>
+                    <span id="wordSaving" class="words-val">0 words saved</span>
                 </div>
             </div>
 
-            <!-- Output -->
-            <div class="flex flex-col space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 id="outputTitle" class="font-semibold text-lg">Optimized Result</h3>
-                    <span id="outputCharCount" class="text-xs text-gray-500">0 characters</span>
+            <div class="editor-grid">
+                <div class="editor-box">
+                    <div class="editor-header">
+                        <h3 id="inputTitle">Source Prompt</h3>
+                        <span id="inputCharCount">0 characters</span>
+                    </div>
+                    <textarea id="inputText" placeholder="Paste your massive prompt here..."></textarea>
                 </div>
-                <div class="glass flex-grow relative overflow-hidden">
-                    <div id="loadingBar" class="progress-bar bg-cyan-electric absolute top-0 left-0"></div>
-                    <textarea id="outputText" class="w-full h-80 p-6 rounded-2xl" readonly placeholder="Result will appear here..."></textarea>
+                <div class="editor-box">
+                    <div class="editor-header">
+                        <h3 id="outputTitle">Optimized Output</h3>
+                        <span id="outputCharCount">0 characters</span>
+                    </div>
+                    <textarea id="outputText" readonly placeholder="Optimized result will appear here..."></textarea>
+                    <button id="copyBtn" class="btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3">
+                            </path>
+                        </svg>
+                        <span id="copyText">Copy Result</span>
+                    </button>
                 </div>
-                <button id="copyBtn" class="bg-cyan-electric text-black font-bold py-3 rounded-xl btn-glow transition-all flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                    <span id="copyText">Copy Optimized Text</span>
-                </button>
             </div>
-        </div>
+        </section>
 
-        <!-- Lower Ad -->
-        <div class="ad-slot max-w-4xl mx-auto mt-12" data-label="Ads / Anuncio"></div>
-
+        <div class="ad-slot" data-label="Ads / Anuncio"></div>
     </main>
 
-    <!-- Footer -->
-    <footer class="p-8 text-center text-gray-500 text-sm border-t border-white/5">
-        <div class="flex justify-center gap-6 mb-4">
-            <button onclick="openModal('privacy')" id="footerPrivacy" class="hover:text-cyan-electric underline">Privacy Policy</button>
-            <button onclick="openModal('terms')" id="footerTerms" class="hover:text-cyan-electric underline">Terms of Service</button>
+    <footer class="container">
+        <div class="footer-links">
+            <button onclick="openModal('privacy')" id="footerPrivacy">Privacy Policy</button>
+            <button onclick="openModal('terms')" id="footerTerms">Terms of Service</button>
+            <button onclick="openModal('support')" id="footerSupport">Support Project</button>
+            <button onclick="openModal('contact')" id="footerContact">Contact</button>
         </div>
-        <p>&copy; 2026 OptiMicroTools. All rights reserved.</p>
+        <p class="copyright">&copy; 2026 OptiMicroTools. All rights reserved.</p>
     </footer>
 
-    <!-- Modals -->
-    <div id="modalOverlay" class="fixed inset-0 modal-overlay hidden z-50 flex items-center justify-center p-4">
-        <div class="glass max-w-2xl w-full max-h-[80vh] overflow-y-auto p-10 relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">&times;</button>
-            <div id="modalContent" class="prose prose-invert prose-cyan text-gray-300">
-                <!-- Content injected here -->
+    <!-- MODALS -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modalBody" class="modal-body">
+                <!-- Injected content -->
             </div>
-            <button onclick="acceptLegal()" id="modalAccept" class="mt-8 w-full bg-cyan-electric text-black font-bold py-3 rounded-lg hover:opacity-90">I Accept / Acepto</button>
         </div>
     </div>
 
-    <!-- Core Logic -->
     <script>
         const translations = {
             en: {
                 mainTitle: "LLM Token-Optimizer",
-                mainSubtitle: "Compress your prompts for maximum efficiency without losing context.",
-                levelLabel: "Compression Level:",
+                mainSubtitle: "Reduce prompt cost and complexity without losing semantic depth.",
+                levelLabel: "Optimization Mode:",
                 optLow: "Standard Cleanup",
-                optMed: "Balanced",
-                optHigh: "Aggressive (List Mode)",
-                inputTitle: "Your Prompt",
-                outputTitle: "Optimized Result",
-                inputTextPlace: "Paste your text here...",
-                outputTextPlace: "Result will appear here...",
-                copyText: "Copy Optimized Text",
+                optMed: "Balanced Optimization",
+                optHigh: "Aggressive List Mode",
+                inputTitle: "Source Prompt",
+                outputTitle: "Optimized Output",
+                inputTextPlace: "Paste your massive prompt here...",
+                outputTextPlace: "Optimized result will appear here...",
+                copyText: "Copy Result",
                 copied: "Copied!",
                 savings: "Savings:",
                 wordsSaved: "words saved",
                 charCount: "characters",
                 footerPrivacy: "Privacy Policy",
-                footerTerms: "Terms of Service",
-                legalAccept: "I Understand & Accept",
-                privacyTitle: "Privacy Policy",
-                termsTitle: "Terms of Service",
-                privacyContent: "This tool processes all text 100% locally in your browser. We never transmit your prompts to any server. Your privacy is guaranteed.",
-                termsContent: "By using this tool, you agree that processing happens on your device. We are not responsible for any LLM output changes resulting from compression."
+                footerTerms: "Terms or Service",
+                footerSupport: "Support Project",
+                footerContact: "Contact",
+                legalAccept: "Accept & Continue",
+                privacyTitle: "Privacy First Policy",
+                termsTitle: "Terms of Use",
+                supportTitle: "Support the Project",
+                contactTitle: "Official Contact",
+                privacyContent: "All processing is performed locally in your browser using Vanilla JavaScript. No data is ever sent to our servers. Your prompts remain 100% private.",
+                termsContent: "This tool is provided 'as is'. While we aim to maintain semantic integrity, always review the optimized output before using it with production LLMs.",
+                supportContent: "Help us keep these tools free and ad-light. Your contribution supports infrastructure and development.",
+                contactContent: "Have questions or need a custom micro-tool? Reach out through our official channels.",
+                cryptoLabel: "USDT (TRC20) Address:",
+                copyAddr: "Copy Address"
             },
             es: {
                 mainTitle: "Optimizador de Tokens LLM",
-                mainSubtitle: "Comprime tus prompts para máxima eficiencia sin perder el contexto.",
-                levelLabel: "Nivel de Compresión:",
+                mainSubtitle: "Reduce el costo y complejidad de tus prompts sin perder profundidad semántica.",
+                levelLabel: "Modo de Optimización:",
                 optLow: "Limpieza Estándar",
-                optMed: "Equilibrado",
-                optHigh: "Agresivo (Modo Lista)",
-                inputTitle: "Tu Prompt",
+                optMed: "Optimización Balanceada",
+                optHigh: "Modo Lista Agresivo",
+                inputTitle: "Prompt Original",
                 outputTitle: "Resultado Optimizado",
-                inputTextPlace: "Pega tu texto aquí...",
-                outputTextPlace: "El resultado aparecerá aquí...",
-                copyText: "Copiar Texto Optimizado",
+                inputTextPlace: "Pega tu prompt masivo aquí...",
+                outputTextPlace: "El resultado optimizado aparecerá aquí...",
+                copyText: "Copiar Resultado",
                 copied: "¡Copiado!",
                 savings: "Ahorro:",
                 wordsSaved: "palabras ahorradas",
                 charCount: "caracteres",
-                footerPrivacy: "Política de Privacidad",
-                footerTerms: "Términos de Servicio",
-                legalAccept: "Entiendo y Acepto",
-                privacyTitle: "Política de Privacidad",
-                termsTitle: "Términos de Servicio",
-                privacyContent: "Esta herramienta procesa todo el texto 100% localmente en tu navegador. Nunca transmitimos tus prompts a ningún servidor. Tu privacidad está garantizada.",
-                termsContent: "Al usar esta herramienta, aceptas que el procesamiento ocurre en tu dispositivo. No somos responsables de cambios en los resultados de LLM producto de la compresión."
+                footerPrivacy: "Privacidad",
+                footerTerms: "Términos",
+                footerSupport: "Apoyar Proyecto",
+                footerContact: "Contacto",
+                legalAccept: "Aceptar y Continuar",
+                privacyTitle: "Política de Privacidad Local",
+                termsTitle: "Términos de Uso",
+                supportTitle: "Apoya el Proyecto",
+                contactTitle: "Contacto Oficial",
+                privacyContent: "Todo el procesamiento se realiza localmente en tu navegador. Ningún dato es enviado a nuestros servidores. Tus prompts son 100% privados.",
+                termsContent: "Esta herramienta se entrega 'tal cual'. Aunque buscamos mantener la integridad semántica, siempre revisa el resultado antes de usarlo en producción.",
+                supportContent: "Ayúdanos a mantener estas herramientas gratuitas y con publicidad mínima. Tu contribución apoya la infraestructura y el desarrollo.",
+                contactContent: "¿Tienes dudas o necesitas una herramienta a medida? Contáctanos por canales oficiales.",
+                cryptoLabel: "Dirección USDT (TRC20):",
+                copyAddr: "Copiar Dirección"
             }
         };
 
@@ -253,19 +719,28 @@
 
         let currentLang = 'en';
 
-        // Initialize
+        // --- Core Logic ---
         function init() {
-            const savedLang = localStorage.getItem('om-lang') || (navigator.language.startsWith('es') ? 'es' : 'en');
-            setLanguage(savedLang);
-            checkLegalConsent();
+            try {
+                const savedLang = localStorage.getItem('ot_lang') || (navigator.language.startsWith('es') ? 'es' : 'en');
+                setLanguage(savedLang);
+
+                checkLegalPersistence();
+
+                setupEventListeners();
+            } catch (e) {
+                console.error("Initialization error:", e);
+            }
         }
 
         function setLanguage(lang) {
             currentLang = lang;
-            localStorage.setItem('om-lang', lang);
-            document.getElementById('langToggle').textContent = lang === 'en' ? 'ES' : 'EN';
-            
+            localStorage.setItem('ot_lang', lang);
+            document.documentElement.lang = lang;
+
             const t = translations[lang];
+            document.getElementById('langToggle').textContent = lang === 'en' ? 'ES' : 'EN';
+
             document.getElementById('mainTitle').textContent = t.mainTitle;
             document.getElementById('mainSubtitle').textContent = t.mainSubtitle;
             document.getElementById('levelLabel').textContent = t.levelLabel;
@@ -279,149 +754,178 @@
             document.getElementById('copyText').textContent = t.copyText;
             document.getElementById('footerPrivacy').textContent = t.footerPrivacy;
             document.getElementById('footerTerms').textContent = t.footerTerms;
-            document.getElementById('modalAccept').textContent = t.legalAccept;
+            document.getElementById('footerSupport').textContent = t.footerSupport;
+            document.getElementById('footerContact').textContent = t.footerContact;
 
             updateStats();
         }
 
-        document.getElementById('langToggle').onclick = () => {
-            setLanguage(currentLang === 'en' ? 'es' : 'en');
-        };
+        function setupEventListeners() {
+            const input = document.getElementById('inputText');
+            const level = document.getElementById('compressionLevel');
 
-        // Optimization Engine
-        const inputArea = document.getElementById('inputText');
-        const outputArea = document.getElementById('outputText');
-        const levelSelect = document.getElementById('compressionLevel');
+            input.addEventListener('input', () => debounce(processOptimization(), 300));
+            level.addEventListener('change', () => processOptimization());
 
-        inputArea.addEventListener('input', debounce(optimize, 300));
-        levelSelect.addEventListener('change', optimize);
+            document.getElementById('langToggle').onclick = () => {
+                setLanguage(currentLang === 'en' ? 'es' : 'en');
+            };
 
-        function optimize() {
-            const text = inputArea.value.trim();
-            if (!text) {
-                outputArea.value = '';
-                updateStats();
-                return;
-            }
+            document.getElementById('copyBtn').onclick = () => copyToClipboard();
+        }
 
-            const startTime = Date.now();
-            const level = levelSelect.value;
-            
-            // Show progress bar for heavy tasks
-            const progress = document.getElementById('loadingBar');
-            progress.style.width = '100%';
+        function processOptimization() {
+            try {
+                const text = document.getElementById('inputText').value.trim();
+                const level = document.getElementById('compressionLevel').value;
+                const output = document.getElementById('outputText');
 
-            setTimeout(() => {
+                if (!text) {
+                    output.value = '';
+                    updateStats();
+                    return;
+                }
+
                 let result = text;
 
-                // Level 1: Basic Cleanup
-                result = result.replace(/\s+/g, ' ')
-                               .replace(/\n\s*\n/g, '\n')
-                               .trim();
+                // Level 1: Cleanup
+                result = result.replace(/\s+/g, ' ').replace(/\n\s*\n/g, '\n').trim();
 
-                // Level 2: Stop Words Removal (Balanced)
+                // Level 2: Semantic (Stop-words)
                 if (level === 'medium' || level === 'high') {
                     const words = result.split(/\s+/);
                     const filtered = words.filter(word => {
-                        const cleanWord = word.toLowerCase().replace(/[.,!?;:]/g, '');
-                        return !stopWords.en.has(cleanWord) && !stopWords.es.has(cleanWord);
+                        const clean = word.toLowerCase().replace(/[.,!?;:]/g, '');
+                        return !stopWords.en.has(clean) && !stopWords.es.has(clean);
                     });
                     result = filtered.join(' ');
                 }
 
-                // Level 3: Aggressive List Mode
+                // Level 3: Structural (Lists)
                 if (level === 'high') {
-                    // Convert paragraphs to bullet points
                     const sentences = result.split(/[.!?]+/).filter(s => s.trim().length > 5);
                     result = sentences.map(s => `• ${s.trim()}`).join('\n');
                 }
 
-                outputArea.value = result;
+                output.value = result;
                 updateStats();
-                
-                // Hide progress bar
-                setTimeout(() => progress.style.width = '0%', 200);
-            }, 50);
+
+            } catch (err) {
+                console.error("Optimization failed:", err);
+            }
         }
 
         function updateStats() {
-            const iText = inputArea.value;
-            const oText = outputArea.value;
-            
-            document.getElementById('inputCharCount').textContent = `${iText.length} ${translations[currentLang].charCount}`;
-            document.getElementById('outputCharCount').textContent = `${oText.length} ${translations[currentLang].charCount}`;
-
-            if (iText.length > 0) {
-                const diff = iText.length - oText.length;
-                const perc = Math.round((diff / iText.length) * 100) || 0;
-                const wordDiff = iText.split(/\s+/).length - oText.split(/\s+/).length;
-
-                document.getElementById('charSaving').textContent = `${translations[currentLang].savings} ${perc}%`;
-                document.getElementById('wordSaving').textContent = `${wordDiff} ${translations[currentLang].wordsSaved}`;
-            } else {
-                document.getElementById('charSaving').textContent = `${translations[currentLang].savings} 0%`;
-                document.getElementById('wordSaving').textContent = `0 ${translations[currentLang].wordsSaved}`;
-            }
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function() {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, arguments), wait);
-            };
-        }
-
-        // Copy functionality
-        document.getElementById('copyBtn').onclick = () => {
-            if (!outputArea.value) return;
-            navigator.clipboard.writeText(outputArea.value).then(() => {
-                const btnContent = document.getElementById('copyBtn').innerHTML;
-                const copyText = document.getElementById('copyText');
-                const original = copyText.textContent;
-                copyText.textContent = translations[currentLang].copied;
-                setTimeout(() => copyText.textContent = original, 2000);
-            });
-        };
-
-        // Modal Logic
-        function openModal(type) {
-            const overlay = document.getElementById('modalOverlay');
-            const content = document.getElementById('modalContent');
+            const iVal = document.getElementById('inputText').value;
+            const oVal = document.getElementById('outputText').value;
             const t = translations[currentLang];
 
-            overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            document.getElementById('inputCharCount').textContent = `${iVal.length} ${t.charCount}`;
+            document.getElementById('outputCharCount').textContent = `${oVal.length} ${t.charCount}`;
 
-            if (type === 'privacy') {
-                content.innerHTML = `<h2>${t.privacyTitle}</h2><p>${t.privacyContent}</p>`;
+            if (iVal.length > 0) {
+                const diff = iVal.length - oVal.length;
+                const perc = Math.round((diff / iVal.length) * 100) || 0;
+                document.getElementById('charSaving').textContent = `${t.savings} ${perc}%`;
+
+                const wordDiff = (iVal.split(/\s+/).length - oVal.split(/\s+/).length);
+                document.getElementById('wordSaving').textContent = `${wordDiff} ${t.wordsSaved}`;
             } else {
-                content.innerHTML = `<h2>${t.termsTitle}</h2><p>${t.termsContent}</p>`;
+                document.getElementById('charSaving').textContent = `${t.savings} 0%`;
+                document.getElementById('wordSaving').textContent = `0 ${t.wordsSaved}`;
             }
+        }
+
+        function copyToClipboard() {
+            const val = document.getElementById('outputText').value;
+            if (!val) return;
+
+            navigator.clipboard.writeText(val).then(() => {
+                const btnText = document.getElementById('copyText');
+                const original = btnText.textContent;
+                btnText.textContent = translations[currentLang].copied;
+                setTimeout(() => btnText.textContent = original, 2000);
+            });
+        }
+
+        // --- Modal System ---
+        function openModal(type) {
+            const t = translations[currentLang];
+            const body = document.getElementById('modalBody');
+            const overlay = document.getElementById('modalOverlay');
+
+            let content = '';
+
+            switch (type) {
+                case 'privacy':
+                    content = `<h2>${t.privacyTitle}</h2><p>${t.privacyContent}</p><button class="btn-modal btn-accept" onclick="acceptLegal()">${t.legalAccept}</button>`;
+                    break;
+                case 'terms':
+                    content = `<h2>${t.termsTitle}</h2><p>${t.termsContent}</p><button class="btn-modal btn-accept" onclick="acceptLegal()">${t.legalAccept}</button>`;
+                    break;
+                case 'support':
+                    content = `
+                        <h2>${t.supportTitle}</h2>
+                        <p>${t.supportContent}</p>
+                        <div style="display:grid; gap:1.25rem;">
+                            <a href="https://www.buymeacoffee.com/jota302" target="_blank" class="btn-outline btn-modal">Buy Me a Coffee</a>
+                            <a href="https://paypal.me/jota302" target="_blank" class="btn-outline btn-modal">PayPal</a>
+                            <div class="crypto-box">
+                                <span class="crypto-addr" id="cryptoAddr">TE95Gtd8qTWnsEcqXxDEoQoKLNg2hMvVtV</span>
+                                <button onclick="copyCrypto()" class="lang-btn" style="border-radius:12px">${t.copyAddr}</button>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'contact':
+                    content = `
+                        <h2>${t.contactTitle}</h2>
+                        <p>${t.contactContent}</p>
+                        <div style="display:grid; gap:1.25rem;">
+                            <a href="https://x.com/optimicrotools" target="_blank" class="btn-outline btn-modal">𝕏 (Twitter)</a>
+                            <a href="mailto:jota302@gmail.com" class="btn-outline btn-modal">Official Email Support</a>
+                        </div>
+                    `;
+                    break;
+            }
+
+            body.innerHTML = content;
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            document.getElementById('modalOverlay').classList.add('hidden');
+            document.getElementById('modalOverlay').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
         function acceptLegal() {
-            localStorage.setItem('om-consent', 'true');
+            localStorage.setItem('ot_legal_v2', 'true');
             closeModal();
         }
 
-        function checkLegalConsent() {
-            if (!localStorage.getItem('om-consent')) {
-                setTimeout(() => openModal('privacy'), 1000);
+        function checkLegalPersistence() {
+            if (!localStorage.getItem('ot_legal_v2')) {
+                setTimeout(() => openModal('privacy'), 1500);
             }
         }
 
-        // Close on escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
+        function copyCrypto() {
+            const addr = document.getElementById('cryptoAddr').textContent;
+            navigator.clipboard.writeText(addr).then(() => {
+                alert(translations[currentLang].copied);
+            });
+        }
 
-        init();
+        let debounceTimer;
+        function debounce(callback, time) {
+            window.clearTimeout(debounceTimer);
+            debounceTimer = window.setTimeout(callback, time);
+        }
+
+        // Init App
+        window.onload = init;
     </script>
 </body>
+
 </html>
