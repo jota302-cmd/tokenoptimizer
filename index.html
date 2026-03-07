@@ -307,7 +307,7 @@
         /* --- Ad Slots --- */
         .ad-slot {
             width: 100%;
-            min-height: 100px;
+            min-height: 90px;
             background: rgba(255, 255, 255, 0.01);
             border: 1px dashed var(--glass-border);
             border-radius: 1.25rem;
@@ -320,6 +320,101 @@
             text-transform: uppercase;
             letter-spacing: 0.2em;
             font-weight: 700;
+        }
+
+        /* --- Technical Section --- */
+        .tech-section {
+            margin: 4rem auto;
+            max-width: 900px;
+        }
+
+        .tech-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 2.5rem;
+            padding: 3.5rem;
+        }
+
+        .tech-card h2 {
+            color: var(--cyan-electric);
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .tech-content {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .usage-guide {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 1.25rem;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--cyan-electric);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            border: 1px solid var(--cyan-glow);
+        }
+
+        .step-text {
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .tech-footer {
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .tech-info-block h3 {
+            font-size: 0.9rem;
+            color: var(--cyan-electric);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .tech-info-block p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            .tech-card {
+                padding: 2rem;
+            }
+
+            .tech-footer {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
         }
 
         /* --- Footer --- */
@@ -622,6 +717,52 @@
         </section>
 
         <div class="ad-slot" data-label="Ads / Anuncio"></div>
+
+        <!-- Technical Insights Section -->
+        <section class="tech-section">
+            <div class="tech-card glass-card">
+                <h2 id="techTitle">Technical Insights: How Token-Optimizer Works</h2>
+                <div class="tech-content">
+                    <p id="techDesc">LLM Token-Optimizer uses advanced Client-Side Processing to analyze and compress
+                        your text before it reaches the model. By removing linguistic redundancies (Stop-words),
+                        normalizing whitespace, and restructuring content into optimized lists, the tool significantly
+                        reduces the 'Context Window' usage. This optimization ensures that your GPT-4 or Claude
+                        instances focus on the semantic core of your request, saving up to 40% in token costs while
+                        maintaining the logical integrity of the prompt. Ideal for developers and power users working
+                        with massive system prompts or detailed instructions.</p>
+                </div>
+
+                <div class="usage-guide">
+                    <div class="guide-step">
+                        <div class="step-num">1</div>
+                        <p class="step-text" id="step1">Input your raw prompt into the 'Source Prompt' editor.</p>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-num">2</div>
+                        <p class="step-text" id="step2">Select your optimization mode: Cleanup, Balanced, or Aggressive.
+                        </p>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-num">3</div>
+                        <p class="step-text" id="step3">Review and copy the 'Optimized Output' for immediate use in your
+                            LLM.</p>
+                    </div>
+                </div>
+
+                <div class="tech-footer">
+                    <div class="tech-info-block">
+                        <h3 id="securityTitle">Security & Privacy</h3>
+                        <p id="securityDesc">Military-grade privacy: All processing is done via JavaScript/WASM directly
+                            in your browser. No data ever leaves your device.</p>
+                    </div>
+                    <div class="tech-info-block">
+                        <h3 id="faqTitle">Quick FAQ</h3>
+                        <p id="faq1"><strong>Q:</strong> Does it lose meaning? <br>A: Standard cleanup preserves 100%
+                            meaning; Aggressive mode prioritizes logic over syntax.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="container">
@@ -676,7 +817,16 @@
                 supportContent: "Help us keep these tools free and ad-light. Your contribution supports infrastructure and development.",
                 contactContent: "Have questions or need a custom micro-tool? Reach out through our official channels.",
                 cryptoLabel: "USDT (TRC20) Address:",
-                copyAddr: "Copy Address"
+                copyAddr: "Copy Address",
+                techTitle: "Technical Insights: How Token-Optimizer Works",
+                techDesc: "LLM Token-Optimizer uses advanced Client-Side Processing to analyze and compress your text before it reaches the model. By removing linguistic redundancies (Stop-words), normalizing whitespace, and restructuring content into optimized lists, the tool significantly reduces the 'Context Window' usage. This optimization ensures that your GPT-4 or Claude instances focus on the semantic core of your request, saving up to 40% in token costs while maintaining the logical integrity of the prompt. Ideal for developers and power users working with massive system prompts or detailed instructions.",
+                step1: "Input your raw prompt into the 'Source Prompt' editor.",
+                step2: "Select your optimization mode: Cleanup, Balanced, or Aggressive.",
+                step3: "Review and copy the 'Optimized Output' for immediate use in your LLM.",
+                securityTitle: "Security & Privacy",
+                securityDesc: "Military-grade privacy: All processing is done via JavaScript/WASM directly in your browser. No data ever leaves your device.",
+                faqTitle: "Quick FAQ",
+                faq1: "<strong>Q:</strong> Does it lose meaning? <br>A: Standard cleanup preserves 100% meaning; Aggressive mode prioritizes logic over syntax."
             },
             es: {
                 mainTitle: "Optimizador de Tokens LLM",
@@ -708,7 +858,16 @@
                 supportContent: "Ayúdanos a mantener estas herramientas gratuitas y con publicidad mínima. Tu contribución apoya la infraestructura y el desarrollo.",
                 contactContent: "¿Tienes dudas o necesitas una herramienta a medida? Contáctanos por canales oficiales.",
                 cryptoLabel: "Dirección USDT (TRC20):",
-                copyAddr: "Copiar Dirección"
+                copyAddr: "Copiar Dirección",
+                techTitle: "Información Técnica: Cómo funciona Token-Optimizer",
+                techDesc: "LLM Token-Optimizer utiliza un procesamiento avanzado del lado del cliente para analizar y comprimir su texto antes de que llegue al modelo. Al eliminar las redundancias lingüísticas (palabras de parada), normalizar los espacios en blanco y reestructurar el contenido en listas optimizadas, la herramienta reduce significativamente el uso de la 'Ventana de Contexto'. Esta optimización garantiza que sus instancias de GPT-4 o Claude se centren en el núcleo semántico de su solicitud, ahorrando hasta un 40% en costos de tokens y manteniendo la integridad lógica del prompt. Ideal para desarrolladores y usuarios avanzados que trabajan con prompts de sistema masivos o instrucciones detalladas.",
+                step1: "Ingrese su prompt original en el editor 'Prompt Original'.",
+                step2: "Seleccione su modo de optimización: Limpieza, Balanceado o Agresivo.",
+                step3: "Revise y copie el 'Resultado Optimizado' para su uso inmediato en su LLM.",
+                securityTitle: "Seguridad y Privacidad",
+                securityDesc: "Privacidad de grado militar: Todo el procesamiento se realiza mediante JavaScript/WASM directamente en su navegador. Ningún dato sale de su dispositivo.",
+                faqTitle: "Preguntas Frecuentes",
+                faq1: "<strong>P:</strong> ¿Se pierde el significado? <br>R: La limpieza estándar mantiene el 100% del significado; el modo Agresivo prioriza la lógica sobre la sintaxis."
             }
         };
 
@@ -756,6 +915,18 @@
             document.getElementById('footerTerms').textContent = t.footerTerms;
             document.getElementById('footerSupport').textContent = t.footerSupport;
             document.getElementById('footerContact').textContent = t.footerContact;
+
+            // Technical section translations
+            document.getElementById('techTitle').textContent = t.techTitle;
+            document.getElementById('techDesc').textContent = t.techDesc;
+            document.getElementById('step1').textContent = t.step1;
+            document.getElementById('step2').textContent = t.step2;
+            document.getElementById('step3').textContent = t.step3;
+            document.getElementById('securityTitle').textContent = t.securityTitle;
+            document.getElementById('securityDesc').textContent = t.securityDesc;
+            document.getElementById('faqTitle').textContent = t.faqTitle;
+            const faqElement = document.getElementById('faq1');
+            if (faqElement) faqElement.innerHTML = t.faq1;
 
             updateStats();
         }
@@ -868,8 +1039,8 @@
                         <h2>${t.supportTitle}</h2>
                         <p>${t.supportContent}</p>
                         <div style="display:grid; gap:1.25rem;">
-                            <a href="https://www.buymeacoffee.com/jota302" target="_blank" class="btn-outline btn-modal">Buy Me a Coffee</a>
-                            <a href="https://paypal.me/jota302" target="_blank" class="btn-outline btn-modal">PayPal</a>
+                            <a href="https://www.buymeacoffee.com/jota302" target="_blank" class="btn-outline btn-modal">Buy Me a Coffee (jota302)</a>
+                            <a href="https://paypal.me/jota302" target="_blank" class="btn-outline btn-modal">PayPal (jota302)</a>
                             <div class="crypto-box">
                                 <span class="crypto-addr" id="cryptoAddr">TE95Gtd8qTWnsEcqXxDEoQoKLNg2hMvVtV</span>
                                 <button onclick="copyCrypto()" class="lang-btn" style="border-radius:12px">${t.copyAddr}</button>
@@ -882,8 +1053,8 @@
                         <h2>${t.contactTitle}</h2>
                         <p>${t.contactContent}</p>
                         <div style="display:grid; gap:1.25rem;">
-                            <a href="https://x.com/optimicrotools" target="_blank" class="btn-outline btn-modal">𝕏 (Twitter)</a>
-                            <a href="mailto:jota302@gmail.com" class="btn-outline btn-modal">Official Email Support</a>
+                            <a href="https://x.com/optimicrotools" target="_blank" class="btn-outline btn-modal">𝕏 (@optimicrotools)</a>
+                            <a href="mailto:jota302@gmail.com" class="btn-outline btn-modal">jota302@gmail.com</a>
                         </div>
                     `;
                     break;
