@@ -653,16 +653,31 @@
                 gap: 1rem;
             }
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 
-<body>
+<body style="opacity:0;transition:opacity 0.15s">
 
     <header class="container">
         <a href="https://optimicrotools.com" class="logo" title="Go to Home / Ir al Inicio">
             <h1>Opti<span>Micro</span>Tools</h1>
         </a>
-        <button id="langToggle" class="lang-btn">ES</button>
+        <div id="lang-toggle"
+            style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:999px;cursor:pointer;backdrop-filter:blur(12px);"
+            onclick="toggleLanguage()">
+            <span style="font-size:0.75rem;font-weight:700;opacity:0.7">EN</span>
+            <div
+                style="width:40px;height:20px;background:rgba(255,255,255,0.1);border-radius:999px;position:relative;display:flex;align-items:center;padding:0 2px;">
+                <div id="toggle-circle"
+                    style="width:16px;height:16px;background:#06B6D4;border-radius:50%;box-shadow:0 0 10px rgba(6,182,212,0.5);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);">
+                </div>
+            </div>
+            <span style="font-size:0.75rem;font-weight:700;opacity:0.7">ES</span>
+        </div>
     </header>
 
     <main class="container">
@@ -765,10 +780,255 @@
         </section>
     </main>
 
+    <!-- Static SEO Content — bilingual -->
+    <div class="container" style="margin-bottom:2rem;">
+        <div class="glass-card" style="padding:2rem;">
+
+            <!-- ESPAÑOL -->
+            <div id="seo-es" class="space-y-6">
+                <div>
+                    <h2 style="font-size:1.2rem;font-weight:700;color:#06B6D4;margin-bottom:.75rem;">¿Qué es SlimContext
+                        y para qué sirve?</h2>
+                    <p style="font-size:.85rem;color:rgba(255,255,255,0.6);line-height:1.8;"><strong
+                            style="color:rgba(255,255,255,0.85);">SlimContext</strong> es una herramienta gratuita de
+                        optimización de tokens para LLMs que reduce el tamaño de tus prompts sin perder profundidad
+                        semántica. Elimina redundancias, palabras vacías y ruido innecesario antes de enviar texto a
+                        ChatGPT, Claude o Gemini — reduciendo costos de API y mejorando la velocidad de respuesta. Todo
+                        procesado localmente en tu navegador.</p>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+                    <div
+                        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;">
+                        <h3
+                            style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:.5rem;">
+                            Standard Cleanup</h3>
+                        <p style="font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6;">Elimina espacios
+                            redundantes, puntuación innecesaria y frases de relleno. Preserva el 100% del significado
+                            semántico.</p>
+                    </div>
+                    <div
+                        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;">
+                        <h3
+                            style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:.5rem;">
+                            Balanced Optimization</h3>
+                        <p style="font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6;">Balance entre reducción
+                            de tokens y preservación del contexto. Ideal para prompts medianos con contexto técnico.</p>
+                    </div>
+                    <div
+                        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;">
+                        <h3
+                            style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:.5rem;">
+                            Aggressive Mode</h3>
+                        <p style="font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6;">Máxima compresión en
+                            formato de lista. Prioriza lógica sobre sintaxis. Para prompts donde el costo por token es
+                            crítico.</p>
+                    </div>
+                </div>
+                <div style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);">
+                    <h3
+                        style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:1rem;">
+                        Casos de uso frecuentes</h3>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.75rem;font-size:.75rem;color:rgba(255,255,255,0.55);line-height:1.7;">
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Desarrolladores con APIs de pago:</strong>
+                                Reducen el costo por consulta optimizando el tamaño del contexto enviado a GPT-4 o
+                                Claude.</p>
+                        </div>
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Automatización con n8n o Make:</strong>
+                                Comprimen prompts en workflows para mantenerse dentro de límites de tokens por minuto.
+                            </p>
+                        </div>
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Ingeniería de prompts:</strong> Refinan
+                                instrucciones largas antes de incluirlas en system prompts de producción.</p>
+                        </div>
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Usuarios de ventana de contexto
+                                    limitada:</strong> Maximizan el uso del espacio disponible en modelos con contexto
+                                corto.</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);">
+                    <h3
+                        style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:1rem;">
+                        Preguntas frecuentes</h3>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;font-size:.75rem;">
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">¿Se pierde
+                                significado al optimizar?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">El modo Standard preserva el 100%
+                                del significado. El modo Aggressive prioriza lógica sobre sintaxis — siempre revisa el
+                                output.</p>
+                        </div>
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">¿Cuántos
+                                tokens puedo ahorrar?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">Depende del texto original. Prompts
+                                verbosos pueden reducirse un 20-40% en modo Balanced y más en modo Aggressive.</p>
+                        </div>
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">¿Mis datos se
+                                envían a algún servidor?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">No. Todo el procesamiento ocurre
+                                localmente en tu navegador con JavaScript. Ningún dato sale de tu dispositivo.</p>
+                        </div>
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">¿Funciona con
+                                cualquier LLM?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">Sí. El output es texto plano
+                                optimizado compatible con GPT-4, Claude, Gemini, Llama o cualquier otro modelo.</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;">
+                    <p style="font-size:.75rem;color:rgba(255,255,255,0.3);">Parte de <a
+                            href="https://optimicrotools.com" style="color:#06B6D4;">OptiMicroTools</a> — 9 herramientas
+                        gratuitas.</p>
+                    <div style="display:flex;gap:1rem;font-size:.75rem;">
+                        <a href="https://optimicrotools.com/blog.html" style="color:rgba(255,255,255,0.3);">Blog
+                            técnico</a>
+                        <a href="https://sanitizer.optimicrotools.com"
+                            style="color:rgba(255,255,255,0.3);">SanitizePro</a>
+                        <a href="https://prompt.optimicrotools.com"
+                            style="color:rgba(255,255,255,0.3);">PromptArchitect</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ENGLISH -->
+            <div id="seo-en" class="hidden">
+                <div>
+                    <h2 style="font-size:1.2rem;font-weight:700;color:#06B6D4;margin-bottom:.75rem;">What is SlimContext
+                        and what is it for?</h2>
+                    <p style="font-size:.85rem;color:rgba(255,255,255,0.6);line-height:1.8;"><strong
+                            style="color:rgba(255,255,255,0.85);">SlimContext</strong> is a free token optimization tool
+                        for LLMs that reduces the size of your prompts without losing semantic depth. It removes
+                        redundancies, stop words and unnecessary noise before sending text to ChatGPT, Claude or Gemini
+                        — reducing API costs and improving response speed. All processed locally in your browser.</p>
+                </div>
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1.5rem;">
+                    <div
+                        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;">
+                        <h3
+                            style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:.5rem;">
+                            Standard Cleanup</h3>
+                        <p style="font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6;">Removes redundant
+                            spaces, unnecessary punctuation and filler phrases. Preserves 100% semantic meaning.</p>
+                    </div>
+                    <div
+                        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;">
+                        <h3
+                            style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:.5rem;">
+                            Balanced Optimization</h3>
+                        <p style="font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6;">Balance between token
+                            reduction and context preservation. Ideal for medium-length prompts with technical context.
+                        </p>
+                    </div>
+                    <div
+                        style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:1rem;">
+                        <h3
+                            style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:.5rem;">
+                            Aggressive Mode</h3>
+                        <p style="font-size:.75rem;color:rgba(255,255,255,0.5);line-height:1.6;">Maximum compression in
+                            list format. Prioritizes logic over syntax. For prompts where token cost is critical.</p>
+                    </div>
+                </div>
+                <div style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);margin-top:1.5rem;">
+                    <h3
+                        style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:1rem;">
+                        Common use cases</h3>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.75rem;font-size:.75rem;color:rgba(255,255,255,0.55);line-height:1.7;">
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Developers with paid APIs:</strong> Reduce
+                                cost per query by optimizing the context size sent to GPT-4 or Claude.</p>
+                        </div>
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">n8n or Make automation:</strong> Compress
+                                prompts in workflows to stay within tokens-per-minute limits.</p>
+                        </div>
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Prompt engineering:</strong> Refine long
+                                instructions before including them in production system prompts.</p>
+                        </div>
+                        <div style="display:flex;gap:.5rem;"><span
+                                style="color:#06B6D4;font-weight:700;flex-shrink:0;">→</span>
+                            <p><strong style="color:rgba(255,255,255,0.75);">Limited context window users:</strong>
+                                Maximize available space in models with short context windows.</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);margin-top:1.5rem;">
+                    <h3
+                        style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#06B6D4;margin-bottom:1rem;">
+                        Frequently asked questions</h3>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;font-size:.75rem;">
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">Is meaning
+                                lost during optimization?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">Standard mode preserves 100%
+                                meaning. Aggressive mode prioritizes logic over syntax — always review the output.</p>
+                        </div>
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">How many
+                                tokens can I save?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">Depends on the original text.
+                                Verbose prompts can be reduced 20-40% in Balanced mode and more in Aggressive.</p>
+                        </div>
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">Is my data
+                                sent to any server?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">No. All processing happens locally
+                                in your browser with JavaScript. No data leaves your device.</p>
+                        </div>
+                        <div>
+                            <p style="font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:.25rem;">Does it work
+                                with any LLM?</p>
+                            <p style="color:rgba(255,255,255,0.5);line-height:1.6;">Yes. The output is optimized plain
+                                text compatible with GPT-4, Claude, Gemini, Llama or any other model.</p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;">
+                    <p style="font-size:.75rem;color:rgba(255,255,255,0.3);">Part of <a
+                            href="https://optimicrotools.com" style="color:#06B6D4;">OptiMicroTools</a> — 9 free tools.
+                    </p>
+                    <div style="display:flex;gap:1rem;font-size:.75rem;">
+                        <a href="https://optimicrotools.com/blog.html" style="color:rgba(255,255,255,0.3);">Technical
+                            blog</a>
+                        <a href="https://sanitizer.optimicrotools.com"
+                            style="color:rgba(255,255,255,0.3);">SanitizePro</a>
+                        <a href="https://prompt.optimicrotools.com"
+                            style="color:rgba(255,255,255,0.3);">PromptArchitect</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
     <footer class="container">
         <div class="footer-links">
-            <button onclick="openModal('privacy')" id="footerPrivacy">Privacy Policy</button>
-            <button onclick="openModal('terms')" id="footerTerms">Terms of Service</button>
+            <a href="https://optimicrotools.com/privacy.html" id="footerPrivacy" style="cursor:pointer;">Privacy
+                Policy</a>
+            <a href="https://optimicrotools.com/terms.html" id="footerTerms" style="cursor:pointer;">Terms of
+                Service</a>
             <button onclick="openModal('support')" id="footerSupport">Support Project</button>
             <button onclick="openModal('contact')" id="footerContact">Contact</button>
         </div>
@@ -808,12 +1068,8 @@
                 footerSupport: "Support Project",
                 footerContact: "Contact",
                 legalAccept: "Accept & Continue",
-                privacyTitle: "Privacy First Policy",
-                termsTitle: "Terms of Use",
                 supportTitle: "Support the Project",
                 contactTitle: "Official Contact",
-                privacyContent: "All processing is performed locally in your browser using Vanilla JavaScript. No data is ever sent to our servers. Your prompts remain 100% private.",
-                termsContent: "This tool is provided 'as is'. While we aim to maintain semantic integrity, always review the optimized output before using it with production LLMs.",
                 supportContent: "Help us keep these tools free and ad-light. Your contribution supports infrastructure and development.",
                 contactContent: "Have questions or need a custom micro-tool? Reach out through our official channels.",
                 cryptoLabel: "USDT (TRC20) Address:",
@@ -849,12 +1105,8 @@
                 footerSupport: "Apoyar Proyecto",
                 footerContact: "Contacto",
                 legalAccept: "Aceptar y Continuar",
-                privacyTitle: "Política de Privacidad Local",
-                termsTitle: "Términos de Uso",
                 supportTitle: "Apoya el Proyecto",
                 contactTitle: "Contacto Oficial",
-                privacyContent: "Todo el procesamiento se realiza localmente en tu navegador. Ningún dato es enviado a nuestros servidores. Tus prompts son 100% privados.",
-                termsContent: "Esta herramienta se entrega 'tal cual'. Aunque buscamos mantener la integridad semántica, siempre revisa el resultado antes de usarlo en producción.",
                 supportContent: "Ayúdanos a mantener estas herramientas gratuitas y con publicidad mínima. Tu contribución apoya la infraestructura y el desarrollo.",
                 contactContent: "¿Tienes dudas o necesitas una herramienta a medida? Contáctanos por canales oficiales.",
                 cryptoLabel: "Dirección USDT (TRC20):",
@@ -879,12 +1131,22 @@
         let currentLang = 'en';
 
         // --- Core Logic ---
+        function toggleLanguage() {
+            setLanguage(currentLang === 'en' ? 'es' : 'en');
+        }
+
+        function initLanguage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            const validUrlLang = (urlLang === 'es' || urlLang === 'en') ? urlLang : null;
+            const savedLang = localStorage.getItem('lang');
+            const browserLang = navigator.language.startsWith('es') ? 'es' : 'en';
+            setLanguage(validUrlLang || savedLang || browserLang);
+        }
+
         function init() {
             try {
-                const savedLang = localStorage.getItem('ot_lang') || (navigator.language.startsWith('es') ? 'es' : 'en');
-                setLanguage(savedLang);
-
-                checkLegalPersistence();
+                initLanguage();
 
                 setupEventListeners();
             } catch (e) {
@@ -894,11 +1156,17 @@
 
         function setLanguage(lang) {
             currentLang = lang;
-            localStorage.setItem('ot_lang', lang);
+            localStorage.setItem('lang', lang);
             document.documentElement.lang = lang;
 
             const t = translations[lang];
-            document.getElementById('langToggle').textContent = lang === 'en' ? 'ES' : 'EN';
+            const circle = document.getElementById('toggle-circle');
+            if (circle) circle.style.transform = lang === 'es' ? 'translateX(20px)' : 'translateX(0)';
+            document.body.style.opacity = '1';
+            const seoEs = document.getElementById('seo-es');
+            const seoEn = document.getElementById('seo-en');
+            if (seoEs) seoEs.classList.toggle('hidden', lang !== 'es');
+            if (seoEn) seoEn.classList.toggle('hidden', lang !== 'en');
 
             document.getElementById('mainTitle').textContent = t.mainTitle;
             document.getElementById('mainSubtitle').textContent = t.mainSubtitle;
@@ -937,10 +1205,6 @@
 
             input.addEventListener('input', () => debounce(processOptimization(), 300));
             level.addEventListener('change', () => processOptimization());
-
-            document.getElementById('langToggle').onclick = () => {
-                setLanguage(currentLang === 'en' ? 'es' : 'en');
-            };
 
             document.getElementById('copyBtn').onclick = () => copyToClipboard();
         }
@@ -1071,15 +1335,9 @@
         }
 
         function acceptLegal() {
-            localStorage.setItem('ot_legal_v2', 'true');
             closeModal();
         }
 
-        function checkLegalPersistence() {
-            if (!localStorage.getItem('ot_legal_v2')) {
-                setTimeout(() => openModal('privacy'), 1500);
-            }
-        }
 
         function copyCrypto() {
             const addr = document.getElementById('cryptoAddr').textContent;
